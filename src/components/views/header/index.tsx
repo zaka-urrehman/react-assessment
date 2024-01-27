@@ -1,14 +1,21 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { Search } from 'lucide-react';
 import Link from 'next/link';
 import Wrapper from '@/components/shared/wrapper';
 import CartButton from '@/components/shared/cartButton';
-import { usePathname } from 'next/navigation';
+import { usePathname,useRouter } from 'next/navigation';
 
 export default function Header() {
+  const [search, setSearch] = useState("")  
+  const router = useRouter()
   const pathname = usePathname()
-  console.log(pathname)
+
+  const handleSearch = (e:any) =>{
+    e.preventDefault()
+    router.push(`/search?name=${search}`)
+    setSearch("")
+  }
 
   return (
     <Wrapper>
@@ -27,8 +34,19 @@ export default function Header() {
           </ul >
         </div >
         <div className='flex justify-between h-12 items-center border-2 border-gray-200 rounded-xl lg:w-[270px] xl:w-[320px] px-2'>
-          <input type="search" className='focus:outline-none px-2 text-xs h-full w-full' placeholder='Search' />
-          <div className=''>
+          <input
+           value={search}
+           type="search"
+           className='focus:outline-none px-2 text-xs h-full w-full'
+           placeholder='Search'
+           onChange={(e)=>setSearch(e.target.value)} 
+           onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch(e)
+            }
+          }}           />
+          <div
+          onClick={handleSearch} className=''>
             <Search height={15} width={15} />
           </div>
         </div>
