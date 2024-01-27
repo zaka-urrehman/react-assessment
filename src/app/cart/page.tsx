@@ -1,20 +1,30 @@
 'use client'
 import Wrapper from '@/components/shared/wrapper'
-import { decreaseProductQuantity, increaseProductQuantity } from '@/redux/slices/cartSlice'
+import { decreaseProductQuantity, emptyCart, increaseProductQuantity } from '@/redux/slices/cartSlice'
 import { useAppSelector,useAppDispatch } from '@/utils/hooks'
 import { Divide, Trash2 } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+
 
 
 const CartPage = () => {
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const { cart, totalQuantity, totalAmount } = useAppSelector((state: any) => state.allCart)
 
   const increaseQuantity = (id:number)=>{
     dispatch(increaseProductQuantity(id))
   }
+
   const decreaseQuantity = (id:number)=>{
   dispatch(decreaseProductQuantity(id))
+  }
+
+  const checkout = () =>{
+    dispatch(emptyCart())
+    
+    router.push('/success')
   }
 
   return (
@@ -64,7 +74,11 @@ const CartPage = () => {
               <h3 className='mt-32'>${totalAmount}</h3>
 
               <div className='col-span-2 w-full px-10'>
-                       <button disabled className={`disabled:cursor-not-allowed bg-black text-white w-full py-3 rounded-lg`}>
+                       <button
+                        disabled={totalQuantity === 0}
+                        className={`disabled:cursor-not-allowed bg-black text-white w-full py-3 rounded-lg`}
+                        onClick={checkout}>
+
                         Checkout
                        </button>
               </div>
